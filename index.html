@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dinner Bell — A fine dining experience where every meal is a memory. Elegant, warm, and unforgettable.">
+    <title>Dinner Bell | Fine Dining</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           CSS RESET & BASE
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-charcoal: #1a1a1a;
+            --color-charcoal-light: #2d2d2d;
+            --color-charcoal-muted: #3a3a3a;
+            --color-gold: #c9a96e;
+            --color-gold-light: #d4b87a;
+            --color-gold-dark: #a88b5a;
+            --color-cream: #f8f5f0;
+            --color-cream-dark: #ede8e0;
+            --color-offwhite: #faf9f7;
+            --color-burgundy: #6b2d3a;
+            --color-burgundy-light: #8b3d4a;
+            --color-sage: #6b7c5e;
+            --color-text-dark: #1a1a1a;
+            --color-text-medium: #4a4a4a;
+            --color-text-light: #7a7a7a;
+            --color-text-muted: #9a9a9a;
+            
+            --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2.5rem;
+            --space-xl: 4rem;
+            --space-2xl: 6rem;
+            --space-3xl: 8rem;
+            
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --transition-smooth: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
+            --shadow-gold: 0 4px 20px rgba(201,169,110,0.3);
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text-dark);
+            background-color: var(--color-offwhite);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        img { max-width: 100%; height: auto; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 var(--space-md); }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        /* ============================================
+           ANIMATIONS & EFFECTS
+           ============================================ */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+        }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        /* floating accent */
+        .float-animation { animation: float 4s ease-in-out infinite; }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: var(--space-md) 0;
+            transition: all var(--transition-normal);
+        }
+        .nav--scrolled {
+            background: rgba(26,26,26,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-sm) 0;
+        }
+        .nav__container {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1400px; margin: 0 auto; padding: 0 var(--space-md);
+        }
+        .nav__logo {
+            font-family: var(--font-serif);
+            font-size: clamp(1.25rem, 2vw, 1.75rem);
+            font-weight: 700;
+            color: var(--color-cream);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav__logo-icon {
+            display: inline-block;
+            font-size: 1.4rem;
+            color: var(--color-gold);
+            transform: rotate(-5deg);
+        }
+        .nav__logo span { color: var(--color-gold); }
+        .nav__menu {
+            display: flex; gap: var(--space-lg); list-style: none;
+        }
+        .nav__link {
+            font-size: 0.875rem; font-weight: 500; color: var(--color-cream);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            position: relative; padding: var(--space-xs) 0;
+        }
+        .nav__link::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 1px; background: var(--color-gold);
+            transition: width var(--transition-normal);
+        }
+        .nav__link:hover::after, .nav__link:focus::after { width: 100%; }
+        .nav__link:hover { color: var(--color-gold); }
+        .nav__cta {
+            display: inline-block; padding: 0.625rem 1.5rem;
+            background: transparent; border: 1px solid var(--color-gold);
+            color: var(--color-gold); font-size: 0.875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            transition: all var(--transition-normal);
+        }
+        .nav__cta:hover {
+            background: var(--color-gold); color: var(--color-charcoal);
+            transform: translateY(-2px); box-shadow: var(--shadow-gold);
+        }
+        .nav__toggle {
+            display: none; flex-direction: column; gap: 5px; z-index: 1001;
+            padding: var(--space-xs);
+        }
+        .nav__toggle-bar {
+            width: 28px; height: 2px; background: var(--color-cream);
+            transition: all var(--transition-normal);
+        }
+        .nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(2) { opacity: 0; }
+        .nav__toggle[aria-expanded="true"] .nav__toggle-bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            position: relative; height: 100vh; min-height: 600px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .hero__bg {
+            position: absolute; inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80');
+            background-size: cover; background-position: center;
+            background-attachment: fixed; will-change: transform;
+        }
+        .hero__overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(26,26,26,0.4) 0%, rgba(26,26,26,0.7) 100%);
+        }
+        .hero__content {
+            position: relative; z-index: 2; text-align: center;
+            color: var(--color-cream); padding: 0 var(--space-md);
+            max-width: 900px; animation: fadeInUp 1s ease-out;
+        }
+        .hero__logo {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700; letter-spacing: 2px;
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero__logo-icon {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            color: var(--color-gold);
+            transform: rotate(-8deg);
+        }
+        .hero__logo span { color: var(--color-gold); }
+        .hero__tagline {
+            font-family: var(--font-serif);
+            font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+            font-weight: 400; font-style: italic;
+            color: var(--color-cream-dark);
+            margin-bottom: var(--space-xl);
+            letter-spacing: 1px;
+        }
+        .hero__cta {
+            display: inline-block; padding: 1rem 2.5rem;
+            background: var(--color-gold); color: var(--color-charcoal);
+            font-size: 0.9375rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            border: 2px solid var(--color-gold);
+            transition: all var(--transition-normal);
+            position: relative; overflow: hidden;
+        }
+        .hero__cta::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%; background: var(--color-charcoal);
+            transition: left var(--transition-slow); z-index: -1;
+        }
+        .hero__cta:hover::before { left: 0; }
+        .hero__cta:hover { color: var(--color-gold); transform: translateY(-3px); box-shadow: var(--shadow-gold); }
+        .hero__scroll {
+            position: absolute; bottom: var(--space-xl); left: 50%;
+            transform: translateX(-50%); z-index: 2;
+            animation: fadeIn 2s ease-out 1s both;
+        }
+        .hero__scroll-line {
+            width: 1px; height: 60px;
+            background: linear-gradient(to bottom, var(--color-gold), transparent);
+            margin: 0 auto; animation: pulse 2s infinite;
+        }
+        .hero__scroll-text {
+            font-size: 0.625rem; text-transform: uppercase;
+            letter-spacing: 3px; color: var(--color-gold);
+            margin-top: var(--space-xs);
+        }
+
+        /* ============================================
+           SECTION HEADERS
+           ============================================ */
+        .section-header {
+            text-align: center; margin-bottom: var(--space-2xl);
+        }
+        .section-header__label {
+            font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 3px;
+            color: var(--color-gold); margin-bottom: var(--space-sm);
+        }
+        .section-header__title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 600; color: var(--color-charcoal);
+            line-height: 1.2; margin-bottom: var(--space-md);
+        }
+        .section-header__divider {
+            width: 60px; height: 2px; background: var(--color-gold);
+            margin: 0 auto;
+        }
+        .section-header__subtitle {
+            font-size: 1.125rem; color: var(--color-text-light);
+            max-width: 600px; margin: var(--space-md) auto 0;
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           AMBIANCE
+           ============================================ */
+        .ambiance { background: var(--color-cream); }
+        .ambiance__grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0; align-items: center;
+        }
+        .ambiance__image-wrapper {
+            position: relative; overflow: hidden;
+            height: 100%; min-height: 500px;
+        }
+        .ambiance__image {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+        .ambiance__image-wrapper:hover .ambiance__image { transform: scale(1.05); }
+        .ambiance__content {
+            padding: var(--space-3xl) var(--space-2xl);
+            max-width: 600px; margin: 0 auto;
+        }
+        .ambiance__label {
+            font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 3px;
+            color: var(--color-gold); margin-bottom: var(--space-md);
+        }
+        .ambiance__title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.75rem, 3vw, 2.75rem);
+            font-weight: 600; color: var(--color-charcoal);
+            line-height: 1.2; margin-bottom: var(--space-lg);
+        }
+        .ambiance__text {
+            font-size: 1rem; color: var(--color-text-medium);
+            line-height: 1.8; margin-bottom: var(--space-md);
+        }
+        .ambiance__text:last-child { margin-bottom: 0; }
+        .ambiance__highlight { color: var(--color-burgundy); font-weight: 500; }
+
+        /* ============================================
+           MENU — ATTRACTIVE & PROFESSIONAL
+           ============================================ */
+        .menu {
+            background: var(--color-offwhite);
+            padding: var(--space-3xl) 0;
+            position: relative;
+        }
+        .menu::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 4px; background: linear-gradient(90deg, var(--color-gold), var(--color-cream-dark), var(--color-gold));
+            background-size: 200% 100%;
+            animation: shimmer 6s linear infinite;
+        }
+        .menu__tabs {
+            display: flex; justify-content: center;
+            gap: var(--space-xs); margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+        }
+        .menu__tab {
+            padding: 0.75rem 2rem;
+            font-size: 0.875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--color-text-light);
+            background: transparent;
+            border: 1px solid transparent;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+            border-radius: 0;
+        }
+        .menu__tab:hover { color: var(--color-gold); }
+        .menu__tab--active {
+            color: var(--color-gold);
+            border-color: var(--color-gold);
+            background: rgba(201,169,110,0.05);
+        }
+        .menu__tab--active::after {
+            content: ''; position: absolute; bottom: -2px; left: 20%; right: 20%;
+            height: 2px; background: var(--color-gold);
+        }
+        .menu__panel { display: none; }
+        .menu__panel--active {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+        .menu__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-xl);
+        }
+        .menu__item {
+            background: var(--color-cream);
+            padding: 0;
+            border: 1px solid var(--color-cream-dark);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .menu__item::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 3px; background: var(--color-gold);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform var(--transition-normal);
+            z-index: 2;
+        }
+        .menu__item:hover::before { transform: scaleX(1); }
+        .menu__item:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-8px);
+            border-color: var(--color-gold-light);
+        }
+        .menu__item-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+            border-radius: 8px 8px 0 0;
+        }
+        .menu__item:hover .menu__item-img { transform: scale(1.03); }
+        .menu__item-body {
+            padding: var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .menu__item-header {
+            display: flex; justify-content: space-between;
+            align-items: baseline; margin-bottom: var(--space-xs);
+        }
+        .menu__item-name {
+            font-family: var(--font-serif);
+            font-size: 1.3rem; font-weight: 700;
+            color: var(--color-charcoal);
+        }
+        .menu__item-price {
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--color-gold);
+            flex-shrink: 0; margin-left: var(--space-sm);
+        }
+        .menu__item-desc {
+            font-size: 0.9375rem;
+            color: var(--color-text-light);
+            line-height: 1.6;
+            flex-grow: 1;
+            margin: var(--space-xs) 0 var(--space-sm);
+        }
+        .menu__item-tags {
+            display: flex; gap: var(--space-xs);
+            flex-wrap: wrap; margin-top: auto;
+        }
+        .menu__tag {
+            font-size: 0.6875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-cream-dark);
+            color: var(--color-text-medium);
+            border-radius: 20px;
+        }
+        .menu__tag--chef { background: var(--color-burgundy); color: var(--color-cream); }
+        .menu__tag--veg { background: var(--color-sage); color: var(--color-cream); }
+        .menu__tag--spicy { background: #c0392b; color: #fff; }
+
+        /* menu item accent line */
+        .menu__item-accent {
+            width: 40px; height: 2px;
+            background: var(--color-gold);
+            margin: var(--space-xs) 0 var(--space-sm);
+            transition: width var(--transition-normal);
+        }
+        .menu__item:hover .menu__item-accent { width: 60px; }
+
+        /* ============================================
+           GALLERY
+           ============================================ */
+        .gallery {
+            background: var(--color-cream);
+            padding: var(--space-3xl) 0;
+        }
+        .gallery__grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+        }
+        .gallery__item {
+            position: relative; overflow: hidden;
+            aspect-ratio: 1/1; border-radius: 8px;
+            transition: transform var(--transition-slow), box-shadow var(--transition-normal);
+            cursor: pointer;
+        }
+        .gallery__item:hover { transform: scale(1.03); box-shadow: var(--shadow-lg); }
+        .gallery__item img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+        .gallery__item:hover img { transform: scale(1.08); }
+        .gallery__item-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: var(--space-md);
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: var(--color-cream);
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            transform: translateY(100%);
+            transition: transform var(--transition-normal);
+        }
+        .gallery__item:hover .gallery__item-overlay { transform: translateY(0); }
+
+        /* ============================================
+           CHEF
+           ============================================ */
+        .chef {
+            background: var(--color-charcoal);
+            color: var(--color-cream);
+            padding: var(--space-3xl) 0;
+        }
+        .chef__grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: var(--space-2xl); align-items: center;
+        }
+        .chef__image-wrapper {
+            position: relative; overflow: hidden;
+        }
+        .chef__image {
+            width: 100%; height: auto; aspect-ratio: 3/4;
+            object-fit: cover; filter: grayscale(30%);
+            transition: filter var(--transition-slow);
+        }
+        .chef__image-wrapper:hover .chef__image { filter: grayscale(0%); }
+        .chef__image-frame {
+            position: absolute; inset: -15px;
+            border: 1px solid var(--color-gold); opacity: 0.4;
+            pointer-events: none;
+        }
+        .chef__content { max-width: 540px; }
+        .chef__label {
+            font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 3px;
+            color: var(--color-gold); margin-bottom: var(--space-md);
+        }
+        .chef__title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.75rem, 3vw, 2.75rem);
+            font-weight: 600; line-height: 1.2;
+            margin-bottom: var(--space-lg);
+        }
+        .chef__quote {
+            font-family: var(--font-serif);
+            font-size: 1.25rem; font-style: italic;
+            color: var(--color-gold-light);
+            line-height: 1.6; margin-bottom: var(--space-lg);
+            padding-left: var(--space-md);
+            border-left: 2px solid var(--color-gold);
+        }
+        .chef__text {
+            font-size: 1rem; color: var(--color-cream-dark);
+            line-height: 1.8; margin-bottom: var(--space-md);
+        }
+        .chef__signature {
+            font-family: var(--font-serif);
+            font-size: 1.5rem; font-style: italic;
+            color: var(--color-gold); margin-top: var(--space-lg);
+        }
+
+        /* ============================================
+           TESTIMONIALS
+           ============================================ */
+        .testimonials {
+            background: var(--color-cream);
+            padding: var(--space-3xl) 0;
+        }
+        .testimonials__grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+        }
+        .testimonial {
+            background: var(--color-offwhite);
+            padding: var(--space-xl);
+            border: 1px solid var(--color-cream-dark);
+            position: relative;
+            transition: all var(--transition-normal);
+            border-radius: 8px;
+        }
+        .testimonial:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+        .testimonial__quote-mark {
+            font-family: var(--font-serif);
+            font-size: 4rem; line-height: 1;
+            color: var(--color-gold); opacity: 0.3;
+            position: absolute; top: var(--space-md); left: var(--space-md);
+        }
+        .testimonial__stars {
+            display: flex; gap: 4px;
+            margin-bottom: var(--space-md);
+        }
+        .testimonial__star { color: var(--color-gold); font-size: 1rem; }
+        .testimonial__text {
+            font-family: var(--font-serif);
+            font-size: 1.125rem; font-style: italic;
+            color: var(--color-text-dark);
+            line-height: 1.7; margin-bottom: var(--space-lg);
+            position: relative; z-index: 1;
+        }
+        .testimonial__author {
+            font-size: 0.9375rem; font-weight: 600;
+            color: var(--color-charcoal);
+        }
+        .testimonial__source {
+            font-size: 0.8125rem; color: var(--color-text-light);
+            margin-top: 2px;
+        }
+
+        /* ============================================
+           RESERVATIONS
+           ============================================ */
+        .reservations {
+            background: var(--color-offwhite);
+            padding: var(--space-3xl) 0;
+        }
+        .reservations__grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0; align-items: stretch;
+        }
+        .reservations__map {
+            position: relative; min-height: 500px;
+            background: var(--color-cream-dark);
+        }
+        .reservations__map iframe {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            border: none; filter: grayscale(20%) contrast(1.1);
+        }
+        .reservations__form-wrapper {
+            background: var(--color-cream);
+            padding: var(--space-2xl);
+            display: flex; flex-direction: column;
+            justify-content: center;
+        }
+        .reservations__form-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 600; color: var(--color-charcoal);
+            margin-bottom: var(--space-xs);
+        }
+        .reservations__form-subtitle {
+            font-size: 1rem; color: var(--color-text-light);
+            margin-bottom: var(--space-xl);
+        }
+        .form__group { margin-bottom: var(--space-md); }
+        .form__label {
+            display: block; font-size: 0.8125rem; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--color-text-medium); margin-bottom: var(--space-xs);
+        }
+        .form__input, .form__select, .form__textarea {
+            width: 100%; padding: 0.875rem 1rem;
+            font-family: var(--font-sans); font-size: 1rem;
+            color: var(--color-text-dark);
+            background: var(--color-offwhite);
+            border: 1px solid var(--color-cream-dark);
+            transition: all var(--transition-fast);
+            border-radius: 4px;
+        }
+        .form__input:focus, .form__select:focus, .form__textarea:focus {
+            border-color: var(--color-gold);
+            box-shadow: 0 0 0 3px rgba(201,169,110,0.15);
+            outline: none;
+        }
+        .form__textarea { resize: vertical; min-height: 100px; }
+        .form__row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+        }
+        .form__submit {
+            width: 100%; padding: 1rem;
+            background: var(--color-gold); color: var(--color-charcoal);
+            font-size: 0.9375rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            border: 2px solid var(--color-gold);
+            transition: all var(--transition-normal);
+            margin-top: var(--space-sm);
+            border-radius: 4px;
+        }
+        .form__submit:hover {
+            background: var(--color-charcoal); color: var(--color-gold);
+            transform: translateY(-2px); box-shadow: var(--shadow-gold);
+        }
+        .form__success {
+            display: none; padding: var(--space-lg);
+            background: var(--color-sage); color: var(--color-cream);
+            text-align: center; margin-top: var(--space-md);
+            border-radius: 4px;
+        }
+        .form__success--visible { display: block; animation: fadeIn 0.5s ease; }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: var(--color-charcoal);
+            color: var(--color-cream-dark);
+            padding: var(--space-2xl) 0 var(--space-lg);
+        }
+        .footer__grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--space-xl); margin-bottom: var(--space-2xl);
+        }
+        .footer__brand { max-width: 300px; }
+        .footer__logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem; font-weight: 700;
+            color: var(--color-cream); margin-bottom: var(--space-md);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .footer__logo-icon { color: var(--color-gold); font-size: 1.3rem; }
+        .footer__logo span { color: var(--color-gold); }
+        .footer__text {
+            font-size: 0.9375rem; line-height: 1.7;
+            color: var(--color-text-muted);
+        }
+        .footer__heading {
+            font-size: 0.875rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 2px;
+            color: var(--color-cream); margin-bottom: var(--space-md);
+        }
+        .footer__list { list-style: none; }
+        .footer__list li { margin-bottom: var(--space-xs); }
+        .footer__link {
+            font-size: 0.9375rem; color: var(--color-text-muted);
+            transition: color var(--transition-fast);
+        }
+        .footer__link:hover { color: var(--color-gold); }
+        .footer__social {
+            display: flex; gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+        .footer__social-link {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--color-charcoal-muted);
+            color: var(--color-cream);
+            transition: all var(--transition-fast);
+            border-radius: 50%;
+        }
+        .footer__social-link:hover {
+            background: var(--color-gold); border-color: var(--color-gold);
+            color: var(--color-charcoal); transform: translateY(-2px);
+        }
+        .footer__bottom {
+            border-top: 1px solid var(--color-charcoal-muted);
+            padding-top: var(--space-lg);
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: var(--space-sm);
+        }
+        .footer__copyright {
+            font-size: 0.8125rem; color: var(--color-text-muted);
+        }
+        .footer__legal { display: flex; gap: var(--space-lg); }
+        .footer__legal-link {
+            font-size: 0.8125rem; color: var(--color-text-muted);
+        }
+        .footer__legal-link:hover { color: var(--color-gold); }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 1024px) {
+            .nav__menu {
+                position: fixed; top: 0; right: -100%;
+                width: 100%; max-width: 400px; height: 100vh;
+                background: var(--color-charcoal);
+                flex-direction: column; justify-content: center;
+                align-items: center; gap: var(--space-xl);
+                transition: right var(--transition-slow);
+                padding: var(--space-2xl);
+            }
+            .nav__menu--open { right: 0; }
+            .nav__toggle { display: flex; }
+            .nav__link { font-size: 1.125rem; }
+            .ambiance__grid { grid-template-columns: 1fr; }
+            .ambiance__image-wrapper { min-height: 350px; order: -1; }
+            .ambiance__content { padding: var(--space-2xl) var(--space-md); }
+            .chef__grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+            .chef__image-wrapper { max-width: 400px; margin: 0 auto; }
+            .chef__content { text-align: center; max-width: 100%; }
+            .chef__quote { border-left: none; padding-left: 0; border-top: 2px solid var(--color-gold); padding-top: var(--space-md); }
+            .testimonials__grid { grid-template-columns: 1fr; max-width: 600px; margin: 0 auto; }
+            .reservations__grid { grid-template-columns: 1fr; }
+            .reservations__map { min-height: 350px; order: 1; }
+            .reservations__form-wrapper { order: -1; padding: var(--space-xl) var(--space-md); }
+            .footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+            .gallery__grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            :root { --space-3xl: 4rem; --space-2xl: 3rem; }
+            .hero { min-height: 500px; }
+            .hero__bg { background-attachment: scroll; }
+            .menu__grid { grid-template-columns: 1fr; }
+            .menu__item { padding: 0; }
+            .form__row { grid-template-columns: 1fr; }
+            .footer__grid { grid-template-columns: 1fr; text-align: center; }
+            .footer__brand { max-width: 100%; }
+            .footer__social { justify-content: center; }
+            .footer__bottom { flex-direction: column; text-align: center; }
+            .footer__legal { justify-content: center; }
+            .gallery__grid { grid-template-columns: 1fr; }
+        }
+
+        @media (min-width: 1440px) { .container { padding: 0 var(--space-xl); } }
+        @media (min-width: 2560px) { :root { font-size: 18px; } .container { max-width: 1600px; } }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .hero__bg { background-attachment: scroll; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+
+    <!-- NAVIGATION -->
+    <nav class="nav" id="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav__container">
+            <a href="#" class="nav__logo" aria-label="Dinner Bell Home">
+                <span class="nav__logo-icon">🔔</span> Dinner <span>Bell</span>
+            </a>
+            <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navMenu">
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+            </button>
+            <ul class="nav__menu" id="navMenu" role="menubar">
+                <li role="none"><a href="#ambiance" class="nav__link" role="menuitem">Our Story</a></li>
+                <li role="none"><a href="#menu" class="nav__link" role="menuitem">Menu</a></li>
+                <li role="none"><a href="#gallery" class="nav__link" role="menuitem">Gallery</a></li>
+                <li role="none"><a href="#chef" class="nav__link" role="menuitem">Chef</a></li>
+                <li role="none"><a href="#testimonials" class="nav__link" role="menuitem">Reviews</a></li>
+                <li role="none"><a href="#reservations" class="nav__cta" role="menuitem">Reserve</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <!-- HERO -->
+        <section class="hero" aria-label="Hero section">
+            <div class="hero__bg" id="heroBg"></div>
+            <div class="hero__overlay"></div>
+            <div class="hero__content">
+                <h1 class="hero__logo">
+                    <span class="hero__logo-icon">🔔</span> Dinner <span>Bell</span>
+                </h1>
+                <p class="hero__tagline">Where every meal is a memory</p>
+                <a href="#reservations" class="hero__cta">Reserve a Table</a>
+            </div>
+            <div class="hero__scroll" aria-hidden="true">
+                <div class="hero__scroll-line"></div>
+                <p class="hero__scroll-text">Scroll</p>
+            </div>
+        </section>
+
+        <!-- AMBIANCE -->
+        <section class="ambiance" id="ambiance" aria-labelledby="ambiance-heading">
+            <div class="ambiance__grid">
+                <div class="ambiance__image-wrapper animate-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80" 
+                         alt="Elegant restaurant interior with warm lighting" 
+                         class="ambiance__image" loading="lazy">
+                </div>
+                <div class="ambiance__content">
+                    <p class="ambiance__label animate-on-scroll delay-1">Since 2018</p>
+                    <h2 class="ambiance__title animate-on-scroll delay-2" id="ambiance-heading">An Invitation to Indulge</h2>
+                    <p class="ambiance__text animate-on-scroll delay-3">
+                        Step through our doors and leave the world behind. At Dinner Bell, every evening is orchestrated to engage all your senses — the gentle <span class="ambiance__highlight">crackling of the fireplace</span>, the warm murmur of convivial conversation, the delicate clinking of crystal glassware, and the intoxicating aromas that drift from our open kitchen.
+                    </p>
+                    <p class="ambiance__text animate-on-scroll delay-4">
+                        Our space is a sanctuary of understated elegance: exposed brick walls warmed by golden light, tables dressed in crisp linen, and chairs that invite you to linger. Here, time slows. Here, every detail has been considered. Here, you are not merely dining — you are <span class="ambiance__highlight">experiencing something extraordinary</span>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENU — ATTRACTIVE & PROFESSIONAL -->
+        <section class="menu" id="menu" aria-labelledby="menu-heading">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-header__label animate-on-scroll">Our Culinary Offerings</p>
+                    <h2 class="section-header__title animate-on-scroll delay-1" id="menu-heading">A Symphony of Flavors</h2>
+                    <div class="section-header__divider animate-on-scroll delay-2"></div>
+                    <p class="section-header__subtitle animate-on-scroll delay-3">Each dish tells a story of passion, precision, and the finest seasonal ingredients.</p>
+                </div>
+
+                <div class="menu__tabs animate-on-scroll" role="tablist" aria-label="Menu categories">
+                    <button class="menu__tab menu__tab--active" role="tab" aria-selected="true" aria-controls="starters-panel" id="starters-tab">From the Fire</button>
+                    <button class="menu__tab" role="tab" aria-selected="false" aria-controls="mains-panel" id="mains-tab">The Main Event</button>
+                    <button class="menu__tab" role="tab" aria-selected="false" aria-controls="desserts-panel" id="desserts-tab">Decadent Finale</button>
+                </div>
+
+                <!-- Starters -->
+                <div class="menu__panel menu__panel--active" id="starters-panel" role="tabpanel" aria-labelledby="starters-tab">
+                    <div class="menu__grid">
+                        <article class="menu__item animate-on-scroll">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80" alt="Charred Octopus" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Charred Octopus</h3>
+                                    <span class="menu__item-price">$24</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Smoked paprika, lemon aioli, charred fingerling potatoes, pickled shallots, and micro cilantro.</p>
+                                <div class="menu__item-tags">
+                                    <span class="menu__tag menu__tag--chef">Chef's Pick</span>
+                                    <span class="menu__tag">Gluten-Free</span>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="menu__item animate-on-scroll delay-1">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Wagyu Beef Carpaccio" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Wagyu Carpaccio</h3>
+                                    <span class="menu__item-price">$28</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Paper-thin A5 wagyu, truffle crema, caper berries, shaved parmesan, and aged balsamic pearls.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">Raw</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item animate-on-scroll delay-2">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&q=80" alt="Roasted Bone Marrow" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Roasted Bone Marrow</h3>
+                                    <span class="menu__item-price">$22</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Herb-crusted marrow, toasted sourdough, parsley salad, pickled red onion, and smoked sea salt.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">Signature</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item animate-on-scroll delay-3">
+                            <img class="menu__item-img" src="images/1.jpg" alt="Burrata & Heirloom" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Burrata & Heirloom</h3>
+                                    <span class="menu__item-price">$19</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Creamy burrata, rainbow heirloom tomatoes, basil oil, toasted pine nuts, and aged balsamic.</p>
+                                <div class="menu__item-tags"><span class="menu__tag menu__tag--veg">Vegetarian</span></div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Mains -->
+                <div class="menu__panel" id="mains-panel" role="tabpanel" aria-labelledby="mains-tab" hidden>
+                    <div class="menu__grid">
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80" alt="Duck Breast à l'Orange" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Duck à l'Orange</h3>
+                                    <span class="menu__item-price">$42</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Pan-seared duck breast, Grand Marnier reduction, roasted fennel, caramelized endive, and crispy skin.</p>
+                                <div class="menu__item-tags"><span class="menu__tag menu__tag--chef">Chef's Pick</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="images/2.jpg" alt="Herb-Crusted Lamb Rack" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Lamb Rack</h3>
+                                    <span class="menu__item-price">$48</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Dijon and herb crust, fondant potatoes, ratatouille, lamb jus, and mint gremolata.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">Signature</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="images/3.jpg" alt="Pan-Roasted Sea Bass" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Sea Bass</h3>
+                                    <span class="menu__item-price">$38</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Mediterranean sea bass, saffron beurre blanc, asparagus, fingerling potatoes, and crispy capers.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">Gluten-Free</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Dry-Aged Ribeye" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Dry-Aged Ribeye</h3>
+                                    <span class="menu__item-price">$58</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">45-day dry-aged prime ribeye, bone marrow butter, roasted garlic, seasonal mushrooms, and red wine reduction.</p>
+                                <div class="menu__item-tags"><span class="menu__tag menu__tag--chef">Premium</span></div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Desserts -->
+                <div class="menu__panel" id="desserts-panel" role="tabpanel" aria-labelledby="desserts-tab" hidden>
+                    <div class="menu__grid">
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" alt="Dark Chocolate Fondant" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Chocolate Fondant</h3>
+                                    <span class="menu__item-price">$16</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Valrhona 70% chocolate, liquid center, vanilla bean ice cream, and gold leaf.</p>
+                                <div class="menu__item-tags"><span class="menu__tag menu__tag--chef">Must Try</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="https://images.unsplash.com/photo-1470324161839-ce2bb6fa6bc3?w=600&q=80" alt="Crème Brûlée Trio" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Crème Brûlée Trio</h3>
+                                    <span class="menu__item-price">$18</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Classic vanilla, lavender honey, and espresso — each with a perfectly caramelized sugar crust.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">Signature</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="images/4.jpg" alt="Seasonal Fruit Tart" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Fruit Tart</h3>
+                                    <span class="menu__item-price">$15</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Almond frangipane, pastry cream, fresh seasonal berries, and apricot glaze.</p>
+                                <div class="menu__item-tags"><span class="menu__tag menu__tag--veg">Vegetarian</span></div>
+                            </div>
+                        </article>
+                        <article class="menu__item">
+                            <img class="menu__item-img" src="images/5.jpg" alt="Cheese Selection" loading="lazy">
+                            <div class="menu__item-body">
+                                <div class="menu__item-header">
+                                    <h3 class="menu__item-name">Cheese Selection</h3>
+                                    <span class="menu__item-price">$22</span>
+                                </div>
+                                <div class="menu__item-accent"></div>
+                                <p class="menu__item-desc">Artisanal selection of five cheeses, honeycomb, fig compote, walnut bread, and quince paste.</p>
+                                <div class="menu__item-tags"><span class="menu__tag">For Sharing</span></div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="gallery" id="gallery" aria-labelledby="gallery-heading">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-header__label animate-on-scroll">Visual Journey</p>
+                    <h2 class="section-header__title animate-on-scroll delay-1" id="gallery-heading">Behind the Plates</h2>
+                    <div class="section-header__divider animate-on-scroll delay-2"></div>
+                    <p class="section-header__subtitle animate-on-scroll delay-3">A glimpse into our world — from kitchen artistry to the ambience that defines us.</p>
+                </div>
+                <div class="gallery__grid">
+                    <div class="gallery__item animate-on-scroll">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80" alt="Elegant table setting" loading="lazy">
+                        <div class="gallery__item-overlay">Table d'hôte</div>
+                    </div>
+                    <div class="gallery__item animate-on-scroll delay-1">
+                        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80" alt="Chef plating" loading="lazy">
+                        <div class="gallery__item-overlay">Plating art</div>
+                    </div>
+                    <div class="gallery__item animate-on-scroll delay-2">
+                        <img src="https://images.unsplash.com/photo-1507041957456-9c397ce39c97?w=600&q=80" alt="Fresh ingredients" loading="lazy">
+                        <div class="gallery__item-overlay">Fresh harvest</div>
+                    </div>
+                    <div class="gallery__item animate-on-scroll delay-3">
+                        <img src="images/rest.jpg" alt="Decadent dessert" loading="lazy">
+                        <div class="gallery__item-overlay">Sweet finale</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHEF -->
+        <section class="chef" id="chef" aria-labelledby="chef-heading">
+            <div class="container">
+                <div class="chef__grid">
+                    <div class="chef__image-wrapper animate-on-scroll">
+                        <div class="chef__image-frame"></div>
+                        <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=600&q=80" 
+                             alt="Head Chef Marcus Chen" class="chef__image" loading="lazy">
+                    </div>
+                    <div class="chef__content">
+                        <p class="chef__label animate-on-scroll delay-1">The Vision Behind the Plate</p>
+                        <h2 class="chef__title animate-on-scroll delay-2" id="chef-heading">A Note from Chef Marcus</h2>
+                        <blockquote class="chef__quote animate-on-scroll delay-3">
+                            "Cooking is not just about feeding people — it is about creating a moment they will carry with them forever."
+                        </blockquote>
+                        <p class="chef__text animate-on-scroll delay-4">
+                            I grew up in the kitchens of my grandmother's countryside restaurant in Provence, where I learned that the best meals are born from respect — respect for the ingredient, respect for the technique, and respect for the guest. At Dinner Bell, every dish begins with a relationship: with the farmer who tends the vegetables, the fisherman who braves the dawn, the forager who knows where the wild mushrooms hide.
+                        </p>
+                        <p class="chef__text animate-on-scroll">
+                            My philosophy is simple: <strong>let the ingredients speak</strong>. We don't mask flavors; we elevate them. We don't rush processes; we honor them. When you dine with us, you are not just eating a meal — you are partaking in a story that began long before you arrived, and one that we hope stays with you long after you leave.
+                        </p>
+                        <p class="chef__signature animate-on-scroll">— Marcus Chen</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section class="testimonials" id="testimonials" aria-labelledby="testimonials-heading">
+            <div class="container">
+                <div class="section-header">
+                    <p class="section-header__label animate-on-scroll">Guest Experiences</p>
+                    <h2 class="section-header__title animate-on-scroll delay-1" id="testimonials-heading">Words of Praise</h2>
+                    <div class="section-header__divider animate-on-scroll delay-2"></div>
+                </div>
+                <div class="testimonials__grid">
+                    <article class="testimonial animate-on-scroll">
+                        <span class="testimonial__quote-mark" aria-hidden="true">"</span>
+                        <div class="testimonial__stars" aria-label="5 out of 5 stars">
+                            <span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span>
+                        </div>
+                        <p class="testimonial__text">An absolutely transcendent dining experience. The duck breast was cooked to perfection, and the wine pairing was impeccable. This is what fine dining should feel like.</p>
+                        <p class="testimonial__author">Sarah Mitchell</p>
+                        <p class="testimonial__source">— The Culinary Journal</p>
+                    </article>
+                    <article class="testimonial animate-on-scroll delay-1">
+                        <span class="testimonial__quote-mark" aria-hidden="true">"</span>
+                        <div class="testimonial__stars" aria-label="5 out of 5 stars">
+                            <span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span>
+                        </div>
+                        <p class="testimonial__text">Dinner Bell doesn't just serve food — it crafts memories. From the moment we walked in, we felt like honored guests in someone's beautiful home. Simply magical.</p>
+                        <p class="testimonial__author">James & Eleanor Wright</p>
+                        <p class="testimonial__source">— Wedding Anniversary Dinner</p>
+                    </article>
+                    <article class="testimonial animate-on-scroll delay-2">
+                        <span class="testimonial__quote-mark" aria-hidden="true">"</span>
+                        <div class="testimonial__stars" aria-label="5 out of 5 stars">
+                            <span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span><span class="testimonial__star">★</span>
+                        </div>
+                        <p class="testimonial__text">Chef Marcus has created something truly special here. The attention to detail, the sourcing of ingredients, the warmth of the service — this restaurant deserves every accolade it receives.</p>
+                        <p class="testimonial__author">Antonio Rossi</p>
+                        <p class="testimonial__source">— Michelin Guide Inspector</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESERVATIONS -->
+        <section class="reservations" id="reservations" aria-labelledby="reservations-heading">
+            <div class="reservations__grid">
+                <div class="reservations__map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2!2d-73.9857!3d40.7484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQ0JzU0LjIiTiA3M8KwNTknMDguNSJX!5e0!3m2!1sen!2sus!4v1" 
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Dinner Bell location on Google Maps"
+                            aria-label="Interactive map showing Dinner Bell restaurant location"></iframe>
+                </div>
+                <div class="reservations__form-wrapper">
+                    <h2 class="reservations__form-title animate-on-scroll" id="reservations-heading">Reserve Your Table</h2>
+                    <p class="reservations__form-subtitle animate-on-scroll delay-1">We look forward to welcoming you for an unforgettable evening.</p>
+                    <form class="reservations__form" id="reservationForm" novalidate>
+                        <div class="form__group animate-on-scroll delay-1">
+                            <label for="name" class="form__label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form__input" placeholder="Your full name" required aria-required="true">
+                        </div>
+                        <div class="form__row">
+                            <div class="form__group animate-on-scroll delay-2">
+                                <label for="email" class="form__label">Email</label>
+                                <input type="email" id="email" name="email" class="form__input" placeholder="your@email.com" required aria-required="true">
+                            </div>
+                            <div class="form__group animate-on-scroll delay-2">
+                                <label for="phone" class="form__label">Phone</label>
+                                <input type="tel" id="phone" name="phone" class="form__input" placeholder="(555) 123-4567" required aria-required="true">
+                            </div>
+                        </div>
+                        <div class="form__row">
+                            <div class="form__group animate-on-scroll delay-3">
+                                <label for="date" class="form__label">Date</label>
+                                <input type="date" id="date" name="date" class="form__input" required aria-required="true">
+                            </div>
+                            <div class="form__group animate-on-scroll delay-3">
+                                <label for="time" class="form__label">Time</label>
+                                <select id="time" name="time" class="form__select" required aria-required="true">
+                                    <option value="">Select a time</option>
+                                    <option value="17:00">5:00 PM</option>
+                                    <option value="17:30">5:30 PM</option>
+                                    <option value="18:00">6:00 PM</option>
+                                    <option value="18:30">6:30 PM</option>
+                                    <option value="19:00">7:00 PM</option>
+                                    <option value="19:30">7:30 PM</option>
+                                    <option value="20:00">8:00 PM</option>
+                                    <option value="20:30">8:30 PM</option>
+                                    <option value="21:00">9:00 PM</option>
+                                    <option value="21:30">9:30 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form__group animate-on-scroll delay-4">
+                            <label for="guests" class="form__label">Number of Guests</label>
+                            <select id="guests" name="guests" class="form__select" required aria-required="true">
+                                <option value="">Select number of guests</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5 Guests</option>
+                                <option value="6">6 Guests</option>
+                                <option value="7">7 Guests</option>
+                                <option value="8">8+ Guests</option>
+                            </select>
+                        </div>
+                        <div class="form__group animate-on-scroll">
+                            <label for="requests" class="form__label">Special Requests</label>
+                            <textarea id="requests" name="requests" class="form__textarea" placeholder="Dietary restrictions, celebrations, seating preferences..."></textarea>
+                        </div>
+                        <button type="submit" class="form__submit animate-on-scroll">Confirm Reservation</button>
+                        <div class="form__success" id="formSuccess" role="alert">
+                            <p>Thank you! Your reservation request has been received. We will confirm your booking shortly.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <p class="footer__logo">
+                        <span class="footer__logo-icon">🔔</span> Dinner <span>Bell</span>
+                    </p>
+                    <p class="footer__text">Where culinary artistry meets genuine warmth. Every visit is an invitation to slow down, savor, and celebrate the beauty of exceptional food and company.</p>
+                    <div class="footer__social">
+                        <a href="#" class="footer__social-link" aria-label="Follow us on Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="footer__social-link" aria-label="Follow us on Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="footer__social-link" aria-label="Follow us on Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <p class="footer__heading">Explore</p>
+                    <ul class="footer__list">
+                        <li><a href="#ambiance" class="footer__link">Our Story</a></li>
+                        <li><a href="#menu" class="footer__link">Menu</a></li>
+                        <li><a href="#gallery" class="footer__link">Gallery</a></li>
+                        <li><a href="#chef" class="footer__link">Chef's Table</a></li>
+                        <li><a href="#reservations" class="footer__link">Reservations</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="footer__heading">Contact</p>
+                    <ul class="footer__list">
+                        <li>42 Ember Lane, Downtown</li>
+                        <li>New York, NY 10001</li>
+                        <li><a href="tel:+12125551234" class="footer__link">(212) 555-1234</a></li>
+                        <li><a href="mailto:hello@dinnerbell.com" class="footer__link">hello@dinnerbell.com</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="footer__heading">Hours</p>
+                    <ul class="footer__list">
+                        <li>Mon – Thu: 5pm – 10pm</li>
+                        <li>Fri – Sat: 5pm – 11pm</li>
+                        <li>Sunday: 4pm – 9pm</li>
+                        <li>Happy Hour: 5pm – 7pm</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">&copy; 2024 Dinner Bell. All rights reserved.</p>
+                <div class="footer__legal">
+                    <a href="#" class="footer__legal-link">Privacy Policy</a>
+                    <a href="#" class="footer__legal-link">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // NAVIGATION SCROLL EFFECT
+        // ============================================
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 100) {
+                navbar.classList.add('nav--scrolled');
+            } else {
+                navbar.classList.remove('nav--scrolled');
+            }
+        });
+
+        // ============================================
+        // HAMBURGER MENU
+        // ============================================
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        navToggle.addEventListener('click', () => {
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', !isExpanded);
+            navMenu.classList.toggle('nav__menu--open');
+            document.body.style.overflow = isExpanded ? '' : 'hidden';
+        });
+
+        document.querySelectorAll('.nav__link, .nav__cta').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('nav__menu--open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // ============================================
+        // SCROLL ANIMATIONS
+        // ============================================
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        // ============================================
+        // HERO PARALLAX
+        // ============================================
+        const heroBg = document.getElementById('heroBg');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (scrolled < window.innerHeight) {
+                heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+
+        // ============================================
+        // MENU TABS
+        // ============================================
+        const menuTabs = document.querySelectorAll('.menu__tab');
+        const menuPanels = document.querySelectorAll('.menu__panel');
+
+        menuTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                menuTabs.forEach(t => {
+                    t.classList.remove('menu__tab--active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                menuPanels.forEach(p => {
+                    p.classList.remove('menu__panel--active');
+                    p.hidden = true;
+                });
+
+                tab.classList.add('menu__tab--active');
+                tab.setAttribute('aria-selected', 'true');
+                const panelId = tab.getAttribute('aria-controls');
+                const panel = document.getElementById(panelId);
+                panel.classList.add('menu__panel--active');
+                panel.hidden = false;
+
+                panel.querySelectorAll('.animate-on-scroll').forEach(el => {
+                    el.classList.remove('is-visible');
+                    setTimeout(() => observer.observe(el), 50);
+                });
+            });
+        });
+
+        // ============================================
+        // RESERVATION FORM
+        // ============================================
+        const reservationForm = document.getElementById('reservationForm');
+        const formSuccess = document.getElementById('formSuccess');
+
+        reservationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const requiredFields = reservationForm.querySelectorAll('[required]');
+            let isValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#c0392b';
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+
+            if (isValid) {
+                formSuccess.classList.add('form__success--visible');
+                reservationForm.reset();
+                setTimeout(() => formSuccess.classList.remove('form__success--visible'), 5000);
+            }
+        });
+
+        reservationForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', () => field.style.borderColor = '');
+        });
+
+        // ============================================
+        // SMOOTH SCROLL
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
